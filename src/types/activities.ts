@@ -6,15 +6,15 @@ export enum ActivityType {
   Swimming = "Swimming",
   Yoga = "Yoga",
   StrengthTraining = "Strength Training"
-}
+};
 
 export type UserActivity = {
-    id: number;
-    type: ActivityType;
-    duration: number;
-    caloriesBurned: number;
-    date: string;
-    description?: string;
-    user: User;
+  id: number;
+  type: ActivityType;
+  duration: number;
+  caloriesBurned: number;
+  date: string;
+  description?: string;
+  user: User;
 };
 

@@ -1,7 +1,7 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
 
-import type { ActivityType, UserActivity } from "../types/activities";
+import type { UserActivity } from "../types/activities";
 import { activities } from "../data/activities";
 import { useUserStore } from "./user";
 
@@ -9,48 +9,64 @@ export const useActivitiesStore = defineStore("activities", () => {
   const userStore = useUserStore();
   const allActivities = ref<UserActivity[]>(activities);
 
-  const allUserActivities = computed(() => {
-    return (
-      allActivities.value?.map((activity) => {
-        const user = userStore.getUserById(activity.user?.id);
-        return {
-          ...activity,
-          type: activity.type as ActivityType,
-          user: user,
-        };
-      }) || []
+  const sortActivities = (activities: UserActivity[]) => {
+    return activities.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
     );
+  };
+
+  const activityFeed = computed(() => {
+    return sortActivities([...allActivities.value]);
   });
 
-  const loggedInUserActivitiies = computed(() => {
-    return (
-      allActivities.value?.map((activity) => {
-        const user = userStore.loggedInUser.value ?? null;
+  const loggedInUserActivities = computed(() => {
+    const user = userStore.loggedInUser;
+    if (!user) return [];
 
-        return {
-          ...activity,
-          type: activity.type as ActivityType,
-          user: user,
-        };
-      }) || []
+    return sortActivities(
+      allActivities.value.filter((activity) => activity.user.id === user.id),
     );
   });
 
   const addUserActivity = (activity: UserActivity) => {
+    if (!userStore.loggedInUser) return
     allActivities.value.push(activity);
   };
 
   const deleteUserActivity = (activityId: number) => {
-    const index = allActivities.value.findIndex((a) => a.id === activityId);
-    if (index !== -1) {
-      allActivities.value.splice(index, 1);
+    if (!userStore.loggedInUser) return
+    allActivities.value = allActivities.value.filter(
+      (activity) => activity.id !== activityId,
+    );
+  };
+
+  const updateUserActivity = (updatedActivity: UserActivity) => {
+    if (!userStore.loggedInUser) return
+    allActivities.value = allActivities.value.map((activity) => {
+      if (activity.id === updatedActivity.id) {
+        return updatedActivity
+      }
+      return activity
+    });
+  };
+
+  const upsertUserActivity = (activity: UserActivity, isEdit: boolean = false) => {
+    if (isEdit) {
+      updateUserActivity(activity);
+    } else {
+      addUserActivity(activity);
     }
   };
 
-    return {
-        allUserActivities,
-        loggedInUserActivitiies,
-        addUserActivity,
-        deleteUserActivity,
-    };
+  const getUserActivityById = (activityId: number) => {
+    return allActivities.value.find((activity) => activity.id === activityId);
+  };
+
+  return {
+    activityFeed,
+    loggedInUserActivities,
+    deleteUserActivity,
+    getUserActivityById,
+    upsertUserActivity
+  };
 });
