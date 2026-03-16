@@ -14,17 +14,17 @@ const userActivities = computed(() =>
     )
 );
 
-const totalWorkouts = computed(() => userActivities.value.length);
+const userTotalWorkouts = computed(() => userActivities.value.length);
 
-const totalDuration = computed(() =>
-    userActivities.value.reduce((sum, activity) => sum + activity.duration, 0)
+const userTotalDuration = computed(() =>
+    userActivities.value.reduce((totalDuration, activity) => totalDuration + activity.duration, 0)
 );
 
-const totalCalories = computed(() =>
-    userActivities.value.reduce((sum, activity) => sum + activity.caloriesBurned, 0)
+const userTotalCalories = computed(() =>
+    userActivities.value.reduce((totalCalories, activity) => totalCalories + activity.caloriesBurned, 0)
 );
 
-const mostFrequentActivity = computed(() => {
+const userMostFrequentActivity = computed(() => {
     const counts: Record<string, number> = {};
 
     userActivities.value.forEach((activity) => {
@@ -59,28 +59,28 @@ const mostFrequentActivity = computed(() => {
                 <div class="column">
                     <div class="box has-text-centered">
                         <p class="heading">Workouts</p>
-                        <p class="title">{{ totalWorkouts }}</p>
+                        <p class="title">{{ userTotalWorkouts }}</p>
                     </div>
                 </div>
 
                 <div class="column">
                     <div class="box has-text-centered">
                         <p class="heading">Total Duration</p>
-                        <p class="title">{{ totalDuration }} min</p>
+                        <p class="title">{{ userTotalDuration }} min</p>
                     </div>
                 </div>
 
                 <div class="column">
                     <div class="box has-text-centered">
                         <p class="heading">Calories Burned</p>
-                        <p class="title">{{ totalCalories }}</p>
+                        <p class="title">{{ userTotalCalories }}</p>
                     </div>
                 </div>
 
                 <div class="column">
                     <div class="box has-text-centered">
-                        <p class="heading">Favorite Activity</p>
-                        <p class="title">{{ mostFrequentActivity }}</p>
+                        <p class="heading">You rock at</p>
+                        <p class="title">{{ userMostFrequentActivity }}</p>
                     </div>
                 </div>
 

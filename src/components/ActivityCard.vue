@@ -33,15 +33,42 @@ const editActivity = () => {
             <figure class="image is-48x48 avatar">
                 <img :src="activity.user.image" alt="User Image">
             </figure>
-            <p class="card-header-title">{{ activity.type }}</p>
+            <div class="card-header-title">
+                <article class="media">
+                    <div class="media-content">
+                        <p class="title is-6 mb-0">
+                            {{ activity.user.name.split(" ")[0] }}
+                        </p>
+                        <p class="subtitle is-7 has-text-grey">
+                            is {{ activity.type }}
+                        </p>
+                    </div>
+                </article>
+            </div>
         </header>
         <div class="card-content">
             <div class="content">
-                {{ activity.description }}
-                <br />
-                {{ activity.duration }} minutes | {{ activity.caloriesBurned }} calories
-                <time datetime="2016-1-1">{{ activity.date }}</time>
+                <p class="is-size-5 has-text-weight-semibold">
+                    {{ activity.description }}
+                </p>
+                <div class="mt-2">
+                    <span class="icon-text mr-4">
+                        <span class="icon">
+                            <i class="fas fa-clock"></i>
+                        </span>
+                        <span>{{ activity.duration }} min</span>
+                    </span>
+                    <span class="icon-text">
+                        <span class="icon">
+                            <i class="fas fa-fire"></i>
+                        </span>
+                        <span>{{ activity.caloriesBurned }} cal</span>
+                    </span>
+                </div>
             </div>
+            <time class="activity-date is-size-7">
+                {{ new Date(activity.date).toDateString() }}
+            </time>
         </div>
         <footer class="card-footer">
             <a href="#" v-if="canModify" class="card-footer-item" @click="editActivity">
