@@ -35,8 +35,8 @@ const deleteUser = (userId: number) => {
                 <table class="table is-fullwidth is-striped">
                     <thead>
                         <tr>
-                            <th>Avatar</th>
-                            <th>Name</th>
+                            <th></th>
+                            <th>Users</th>
                             <th>Email</th>
                             <th>Role</th>
                             <th></th>
