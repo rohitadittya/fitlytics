@@ -3,9 +3,11 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue';
 
 import { users as userData } from '../data/users';
+import { useActivitiesStore } from './activities';
 
 export const useUserStore = defineStore('user', () => {
     const users = ref<User[]>(userData);
+    const activitiesStore = useActivitiesStore();
 
     const loggedInUser = ref<User | null>(null);
 
@@ -34,6 +36,7 @@ export const useUserStore = defineStore('user', () => {
 
     const deleteUser = (userId: number) => {
         users.value = users.value.filter(u => u.id !== userId);
+        activitiesStore.deleteAllActivitiesByUser(userId);
     };
 
     const addUser = (user: User) => {

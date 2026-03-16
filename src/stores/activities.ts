@@ -62,11 +62,18 @@ export const useActivitiesStore = defineStore("activities", () => {
     return allActivities.value.find((activity) => activity.id === activityId);
   };
 
+  const deleteAllActivitiesByUser = (userId: number) => {
+    allActivities.value = allActivities.value.filter(
+      (activity) => activity.user.id !== userId,
+    );
+  };
+
   return {
     activityFeed,
     loggedInUserActivities,
     deleteUserActivity,
     getUserActivityById,
-    upsertUserActivity
+    upsertUserActivity,
+    deleteAllActivitiesByUser
   };
 });
