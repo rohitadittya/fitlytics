@@ -4,9 +4,10 @@ import { useUserStore } from "@/stores/user"
 import { computed, ref } from "vue";
 
 const userStore = useUserStore();
-const users = computed(() => userStore.getAllUsers())
+const users = computed(() => userStore.getAllUsers());
+const loggedInAdmin = computed(() => userStore.loggedInUser);
 
-const editUserId = ref<number | undefined>(undefined)
+const editUserId = ref<number | undefined>(undefined);
 
 const editUser = (userId: number) => {
     editUserId.value = userId;
@@ -51,7 +52,7 @@ const deleteUser = (userId: number) => {
                             <td>{{ user.name }}</td>
                             <td>{{ user.email }}</td>
                             <td>{{ user.role }}</td>
-                            <td>
+                            <td v-if="user.id !== loggedInAdmin?.id">
                                 <button class="button is-primary is-small mr-2" @click="editUser(user.id)">
                                     Edit
                                 </button>
