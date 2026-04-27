@@ -28,7 +28,7 @@ export const useActivitiesStore = defineStore("activities", () => {
     const response = await addActivity(activity);
     const newActivity = response.data;
     if (newActivity) {
-      allActivities.value.push({ ...newActivity, isLikedByUser: false, likesCount: 0, commentsCount: 0 });
+      allActivities.value.unshift({ ...newActivity, isLikedByUser: false, likesCount: 0, commentsCount: 0 });
     }
   };
 

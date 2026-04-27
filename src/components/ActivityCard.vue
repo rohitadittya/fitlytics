@@ -83,24 +83,24 @@ const commentOnActivity = () => {
         </div>
         <footer class="card-footer">
             <a href="#" :class="{ 'has-text-danger': activity.isLikedByUser }" class="card-footer-item"
-                @click="toggleLike">
+                @click.prevent="toggleLike">
                 <span class="icon mt-1">
                     <i class="fas fa-heart" aria-hidden="true"></i>
                 </span>
                 <span class="ml-1">{{ activity.likesCount }}</span>
             </a>
-            <a href="#" class="card-footer-item" @click="commentOnActivity">
+            <a href="#" class="card-footer-item" @click.prevent="commentOnActivity">
                 <span class="icon mt-1">
                     <i class="fas fa-comment" aria-hidden="true"></i>
                 </span>
                 <span class="ml-1">{{ activity.commentsCount }}</span>
             </a>
-            <a href="#" v-if="canModify" class="card-footer-item" @click="editActivity">
+            <a href="#" v-if="canModify" class="card-footer-item" @click.prevent="editActivity">
                 <span class="icon">
                     <i class="fas fa-edit" aria-hidden="true"></i>
                 </span>
             </a>
-            <a href="#" v-if="canModify" class="card-footer-item" @click="deleteActivity">
+            <a href="#" v-if="canModify" class="card-footer-item" @click.prevent="deleteActivity">
                 <span class="icon">
                     <i class="fas fa-trash" aria-hidden="true"></i>
                 </span>
