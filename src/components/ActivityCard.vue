@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { upsertUserAction } from "@/services/user-action.services";
+import type { UserActivityWithDetails } from "../../../server/types/activities.types";
 import { useActivitiesStore } from "@/stores/activities";
-import { type UserActivity } from "@/types/activities";
+import { ActionType } from "../../../server/types/user-action.types";
 
 const props = defineProps({
     activity: {
-        type: Object as () => UserActivity,
+        type: Object as () => UserActivityWithDetails,
         required: true
     },
     canModify: {
@@ -17,12 +19,21 @@ const activitiesStore = useActivitiesStore();
 
 const deleteActivity = () => {
     activitiesStore.deleteUserActivity(props.activity.id)
-}
+};
 
-const emit = defineEmits(["edit"]);
+const toggleLike = async () => {
+    await upsertUserAction(props.activity.id, { type: ActionType.LIKE });
+    activitiesStore.updateUserActivityByAction(props.activity.id, ActionType.LIKE, 'create');
+};
+
+const emit = defineEmits(["edit", "commentOnActivity"]);
 
 const editActivity = () => {
     emit("edit");
+}
+
+const commentOnActivity = () => {
+    emit("commentOnActivity");
 }
 
 </script>
@@ -31,13 +42,13 @@ const editActivity = () => {
     <div class="card">
         <header class="card-header">
             <figure class="image is-48x48 avatar">
-                <img :src="activity.user.image" alt="User Image">
+                <img :src="activity.userImg" alt="User Image">
             </figure>
             <div class="card-header-title">
                 <article class="media">
                     <div class="media-content">
                         <p class="title is-6 mb-0">
-                            {{ activity.user.name.split(" ")[0] }}
+                            {{ activity.username.split(" ")[0] }}
                         </p>
                         <p class="subtitle is-7 has-text-grey">
                             is {{ activity.type }}
@@ -71,19 +82,22 @@ const editActivity = () => {
             </time>
         </div>
         <footer class="card-footer">
+            <a href="#" :class="{ 'has-text-danger': activity.isLikedByUser }" class="card-footer-item"
+                @click="toggleLike">
+                <span class="icon mt-1">
+                    <i class="fas fa-heart" aria-hidden="true"></i>
+                </span>
+                <span class="ml-1">{{ activity.likesCount }}</span>
+            </a>
+            <a href="#" class="card-footer-item" @click="commentOnActivity">
+                <span class="icon mt-1">
+                    <i class="fas fa-comment" aria-hidden="true"></i>
+                </span>
+                <span class="ml-1">{{ activity.commentsCount }}</span>
+            </a>
             <a href="#" v-if="canModify" class="card-footer-item" @click="editActivity">
                 <span class="icon">
                     <i class="fas fa-edit" aria-hidden="true"></i>
-                </span>
-            </a>
-            <a href="#" v-if="!canModify" class="card-footer-item">
-                <span class="icon">
-                    <i class="fas fa-heart" aria-hidden="true"></i>
-                </span>
-            </a>
-            <a href="#" class="card-footer-item">
-                <span class="icon">
-                    <i class="fas fa-share-alt" aria-hidden="true"></i>
                 </span>
             </a>
             <a href="#" v-if="canModify" class="card-footer-item" @click="deleteActivity">

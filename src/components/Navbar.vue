@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
+import { computed } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 
 const userStore = useUserStore();
 const router = useRouter();
 
-const isAdminLoggedIn = userStore.isAdminLoggedIn();
-const isUserLoggedIn = userStore.isUserLoggedIn();
+const isAdminLoggedIn = computed(() => userStore.isAdminLoggedIn);
+const isUserLoggedIn = computed(() => userStore.isUserLoggedIn);
 
 const logout = () => {
   userStore.logout();

@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import ProfileForm from "@/components/ProfileForm.vue";
 import { useUserStore } from "@/stores/user"
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 const userStore = useUserStore();
-const users = computed(() => userStore.getAllUsers());
+const users = computed(() => userStore.allUsers);
 const loggedInAdmin = computed(() => userStore.loggedInUser);
-
 const editUserId = ref<number | undefined>(undefined);
+
+onMounted(async () => {
+    await userStore.loadAllUsers();
+});
 
 const editUser = (userId: number) => {
     editUserId.value = userId;
@@ -18,8 +21,8 @@ const resetEdit = () => {
 };
 
 const deleteUser = (userId: number) => {
-    userStore.deleteUser(userId);
-};
+    userStore.deleteUserByAdmin(userId);
+};  
 </script>
 
 <template>

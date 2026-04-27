@@ -8,11 +8,7 @@ const activitiesStore = useActivitiesStore();
 
 const user = computed(() => userStore.loggedInUser);
 
-const userActivities = computed(() =>
-    activitiesStore.activityFeed.filter(
-        (activity) => activity.user.id === user.value?.id
-    )
-);
+const userActivities = computed(() => activitiesStore.loggedInUserActivities);
 
 const userTotalWorkouts = computed(() => userActivities.value.length);
 

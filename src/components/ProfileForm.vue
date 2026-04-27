@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue"
 import { useUserStore } from "@/stores/user"
-import { Gender, UserRole } from "@/types/user"
+import { Gender, UserRole, type CreateUserDTO, type SafeUser } from "../../../server/types/user.types"
 
 const userStore = useUserStore();
 
@@ -35,7 +35,13 @@ watch(() => props.editUserId, (userId) => {
         return;
     }
 
-    const user = userStore.getUserById(userId);
+    let user: SafeUser | null = null;
+
+    if (props.isAdminEditing) {
+        user = userStore.getUserByIdForAdmin(userId);
+    } else if (props.editUserId && userStore.loggedInUser?.id === props.editUserId) {
+        user = userStore.loggedInUser;
+    }
 
     if (user) {
         name.value = user.name;
@@ -49,21 +55,30 @@ watch(() => props.editUserId, (userId) => {
     }
 }, { immediate: true });
 
-const upsertUser = () => {
-    const userPayload = {
-        id: props.editUserId ?? Math.floor(Math.random() * Date.now()),
+const upsertUser = async () => {
+    const isNewUser = props.editUserId ? false : true;
+    const userPayload: CreateUserDTO = {
         name: name.value,
         email: email.value,
+        password: name.value,
         age: age.value,
         gender: gender.value,
         height: height.value,
         weight: weight.value,
         image: image.value || defaultImage,
         role: role.value,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
     };
-    userStore.upsertUser(userPayload, isEdit.value);
+
+    if (props.isAdminEditing) {
+        if (isNewUser) {
+            await userStore.addUserByAdmin(userPayload);
+        } else if (props.editUserId) {
+            await userStore.updateUserByAdmin(props.editUserId, userPayload);
+        }
+    } else if (props.editUserId) {
+        // Update non-admin user
+        await userStore.updateUser(props.editUserId, userPayload);
+    }
 
     showSuccessNotification.value = true;
 

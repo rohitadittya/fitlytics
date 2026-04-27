@@ -62,10 +62,10 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
-  const isUserAuthenticated = userStore.isUserLoggedIn().value;
-  const isUserAdmin = userStore.isAdminLoggedIn().value;
+  const isUserAuthenticated = userStore.isUserLoggedIn;
+  const isUserAdmin = userStore.isAdminLoggedIn;
 
   if (to.meta.isAuthenticated && !isUserAuthenticated) {
     next({ name: 'Login' });

@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { useActivitiesStore } from "@/stores/activities"
 import ActivityCard from "@/components/ActivityCard.vue"
-import { ref, computed } from "vue"
+import { computed, ref } from "vue"
 import AddActivityModal from "@/components/AddActivityModal.vue"
 
 const activitiesStore = useActivitiesStore();
 
 const isModalOpen = ref(false);
 const editActivityId = ref<number | undefined>(undefined);
+
+const loggedInUserActivities = computed(() => activitiesStore.loggedInUserActivities);
 
 const openModal = () => {
     isModalOpen.value = true;
@@ -55,9 +57,9 @@ const editActivity = (activityId: number) => {
 
             <div class="columns is-multiline">
 
-                <div class="column is-8 is-offset-2" v-for="activity in activitiesStore.loggedInUserActivities"
-                    :key="activity.id">
-                    <ActivityCard :activity="activity" :canModify="true" @edit="editActivity(activity.id)" />
+                <div class="column is-8 is-offset-2" v-for="activity in loggedInUserActivities" :key="activity.id">
+                    <ActivityCard :activity="activity" :canModify="true" @edit="editActivity(activity.id)"
+                        @commentOnActivity="editActivity(activity.id)" />
                 </div>
 
             </div>
