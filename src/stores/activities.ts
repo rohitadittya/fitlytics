@@ -1,9 +1,9 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
 
-import type { ActivityType, CreateActivityDto, UpdateActivityDto, UserActivityWithDetails } from "../../../server/types/activities.types";
+import type { CreateActivityDto, UpdateActivityDto, UserActivityWithDetails } from "../../../server/types/activities.types";
 import { useUserStore } from "./user";
-import { addActivity, deleteActivity, getAllActivities, getAllActivityTypes, updateActivity } from "@/services/activities.services";
+import { addActivity, deleteActivity, getAllActivities, updateActivity } from "@/services/activities.services";
 import { ActionType } from "../../../server/types/user-action.types";
 
 export const useActivitiesStore = defineStore("activities", () => {
